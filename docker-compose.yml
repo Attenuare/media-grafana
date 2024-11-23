@@ -23,5 +23,10 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
 
+  node_exporter:
+    image: prom/node-exporter
+    ports:
+      - "9100:9100"
+
 volumes:
   grafana-data:
