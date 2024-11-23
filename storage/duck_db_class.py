@@ -102,3 +102,17 @@ class DuckDB(object):
         keys = ["key", "link", "image", "title", "categories", "rating", "year"]
 
         return [dict(zip(keys, result)) for result in self.results.fetchall()]
+    
+    def get_medias_by_category(self, category) -> None:
+
+        sql_query = f'''
+        SELECT key, link, image, title, categories, rating, year 
+        FROM media 
+        WHERE title LIKE '%{category}%' '''
+
+        self.db_sql(sql_query)
+
+        keys = ["key", "link", "image", "title", "categories", "rating", "year"]
+
+        return [dict(zip(keys, result)) for result in self.results.fetchall()]
+        
