@@ -4,4 +4,4 @@ global:
 scrape_configs:
   - job_name: 'flask_api'
     static_configs:
-      - targets: ['flask_app:5000'] # Substituir pelo nome do serviço Flask no Docker Compose
+      - targets: ['flask_app:5000']
