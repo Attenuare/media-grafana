@@ -12,6 +12,9 @@ class MediaManager(object):
         self.ready_parameters = self.db.get_all_parameters()
         self.ready_parameters = self.ready_parameters.fetchall()
 
+    def get_medias(self) -> None:
+        return self.db.get_medias()
+
     def run(self) -> None:
         self.prime.get_filters()
         for genre in tqdm(self.prime.filters):

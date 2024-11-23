@@ -1,10 +1,12 @@
 import logging
 import structlog
 
+from manager import MediaManager
 from flask import Flask, jsonify, request
 from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
+manager = MediaManager()
 
 metrics = PrometheusMetrics(app)
 metrics.info('app_info', 'Aplicação Flask para demonstração', version='1.0.0')
@@ -34,6 +36,10 @@ def index():
 @app.route('/status')
 def status():
     return jsonify({'status': 'UP'})
+
+@app.get('/get-movies')
+def get_movies():
+    return jsonify({'movie_data': manager.get_medias()})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
