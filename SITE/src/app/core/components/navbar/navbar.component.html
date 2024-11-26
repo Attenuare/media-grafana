@@ -1,0 +1,55 @@
+<header class="navbar__container" [class.colored__scrolled]="isScrolled">
+
+  <nav class="navbar__nav container">
+    <a [routerLink]="'/'" class="flex-start navbar__logo">
+      <img [ngSrc]="'assets/img/logo.png'" alt="Filmes + Programas de TV" width="144" height="36" [priority]="true">
+    </a>
+
+    
+    <div class="navbar__search">
+      <input 
+        type="search" 
+        placeholder="Buscar Filmes ou Séries" 
+        [(ngModel)]="searchQuery" 
+        class="navbar__search-input" 
+        (input)="onSearchQueryChange()" 
+      />
+    </div>
+
+
+    <div *ngIf="searchQuery.length >= 3" class="navbar__search-results">
+      <div *ngIf="isLoading" class="loading-indicator">
+        <mat-spinner diameter="20"></mat-spinner> Carregando...
+      </div>
+      <ul *ngIf="!isLoading && searchResults.length > 0">
+        <li *ngFor="let result of searchResults">
+          <a [routerLink]="result.media_type === 'movie' ? '/movies/' + result.id : '/tv-shows/' + result.id">
+            <img [src]="result.poster_path ? 'https://image.tmdb.org/t/p/w500' + result.poster_path : 'assets/img/default-poster.png'" alt="{{result.title || result.name}}" />
+            <span>{{result.title || result.name}}</span>
+          </a>
+        </li>
+      </ul>
+      <div *ngIf="!isLoading && searchResults.length === 0">
+        <span>Nenhum resultado encontrado.</span>
+      </div>
+    </div>
+
+    <div class="navbar__list">
+      <a mat-button [routerLink]="''" [routerLinkActive]="['activated-route']" [routerLinkActiveOptions]="{exact: true}" aria-label="Início">Início</a>
+      <a mat-button [routerLink]="'movies'" [routerLinkActive]="['activated-route']" aria-label="Filmes">Filmes</a>
+      <a mat-button [routerLink]="'tv-shows'" [routerLinkActive]="['activated-route']" aria-label="Programas de TV">Programas de TV</a>
+
+     
+
+      <mat-menu #menu="matMenu">
+        <div *ngFor="let theme of themeColorList" [class.hidden]="themeColorInit === theme.color" [attr.aria-label]="'Cor ' + theme.name">
+          <button mat-menu-item (click)="setColorTheme(theme.color)">
+            <mat-icon [style.color]="theme.color" aria-hidden="false" aria-label="Ícone de Seletor de Cor" fontIcon="lens"></mat-icon>
+            <span>{{theme.name}}</span>
+          </button>
+        </div>
+      </mat-menu>
+    </div>
+  </nav>
+
+</header>

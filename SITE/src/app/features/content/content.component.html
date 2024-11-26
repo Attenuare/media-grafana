@@ -1,0 +1,30 @@
+<main class="contents container">
+
+  <h2>Tudo {{contentType | titlecase}} #AgoraEmCartaz</h2>
+
+  <div class="contents__container">
+
+    <mat-card class="contents__filter">
+      <div>Filtrar por</div>
+      <button mat-raised-button color="primary" aria-label="Definir filtro Agora Em Cartaz" disabled>Agora Em Cartaz</button>
+      <button mat-raised-button color="primary" aria-label="Definir filtro Próximos Lançamentos" disabled>Próximos Lançamentos</button>
+      <button mat-raised-button color="primary" aria-label="Definir filtro Populares" disabled>Populares</button>
+    </mat-card>
+
+    <div class="contents__right-side">
+
+      <div class="contents__list">
+        @for (content of nowPlaying; track content) {
+          <app-poster-card [model]="content" [isMovie]="contentType === 'movies'"></app-poster-card>
+        }
+      </div>
+
+      <mat-paginator [length]="totalResults"
+                     [pageSize]="20"
+                     (page)="changePage($event)">
+      </mat-paginator>
+    </div>
+
+  </div>
+
+</main>
