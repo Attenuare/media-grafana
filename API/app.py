@@ -56,7 +56,9 @@ def get_movies_by_search():
     page = int(page) if type(page) is not int and page.isdigit() else int()
     if not search:
         return jsonify({'error': "Need to add a valid search term"})
-    return jsonify({'movie_data_by_search': manager.get_medias_by_search(search, page)})
+    results = manager.get_medias_by_search(search, page)
+    return jsonify({'results': manager.get_medias_by_search(search, page),
+                    'length': len(results)})
 
 @app.get('/genres')
 def get_genres():
@@ -66,7 +68,7 @@ def get_genres():
 def get_best_recommendations():
     page = request.args.get('page', int())
     page = int(page) if type(page) is not int and page.isdigit() else int()
-    return jsonify({'movie_data_by_search': manager.get_best_recommendations(page)})
+    return jsonify({'results': manager.get_best_recommendations(page)})
 
 
 if __name__ == '__main__':

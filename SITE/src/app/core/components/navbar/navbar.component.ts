@@ -31,6 +31,7 @@ export class NavbarComponent {
 
   @Output() changeColorTheme: EventEmitter<string> = new EventEmitter();
   searchQuery: string = '';
+  total: number;
   themeColorList = themeColors;
   themeColorInit: string = Color.PURPLE;
 
@@ -46,7 +47,6 @@ export class NavbarComponent {
 
   constructor(
     private movieService: MoviesService,
-    private onTVService: OnTVService
   ) {}
   
   onSearchQueryChange() {
@@ -54,29 +54,18 @@ export class NavbarComponent {
     if (this.searchQuery.length >= 3) { // Inicia a busca após 3 caracteres
       this.isLoading = true;
       this.searchResults = [];
-  
+
       // Chama o serviço de filmes
-      this.movieService.searchMovies(this.searchQuery, 1).subscribe({
+      this.movieService.searchMovies(this.searchQuery, 0).subscribe({
         next: (response) => {
           console.log('Resultados dos filmes:', response);  // Veja o que a API retorna
+          this.total = response.length;
           this.searchResults = [...this.searchResults, ...response.results];
+          console.log("TETTT", this.total)
+          console.log(this.searchResults)
         },
         error: (error) => {
           console.error('Erro ao buscar filmes:', error);
-        }
-      });
-  
-      // Chama o serviço de séries de TV
-      this.onTVService.searchShows(this.searchQuery, 1).subscribe({
-        next: (response) => {
-          console.log('Resultados das séries:', response);  // Veja o que a API retorna
-          this.searchResults = [...this.searchResults, ...response.results];
-        },
-        error: (error) => {
-          console.error('Erro ao buscar séries:', error);
-        },
-        complete: () => {
-          this.isLoading = false;
         }
       });
     } else {

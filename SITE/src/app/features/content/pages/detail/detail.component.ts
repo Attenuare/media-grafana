@@ -49,7 +49,7 @@ export class DetailComponent implements OnInit {
 
   constructor(
     private moviesService: MoviesService,
-    private tvShowsService: OnTVService,
+    private recommendedMoviesService: OnTVService,
     private route: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
@@ -70,9 +70,9 @@ export class DetailComponent implements OnInit {
           this.getMovieVideo(id);
           this.getRecomendedMovie(id);
         } else {
-          this.getTVShow(id);
-          this.getTVShowVideo(id);
-          this.getRecomendedTVShow(id);
+          this.getrecommendedMovie(id);
+          this.getrecommendedMovieVideo(id);
+          this.getRecomendedrecommendedMovie(id);
         }
 
       }
@@ -117,12 +117,12 @@ export class DetailComponent implements OnInit {
   }
 
   // TV
-  getTVShow(id: string) {
+  getrecommendedMovie(id: string) {
     this.isLoading = true;
 
-    this.tvShowsService.getTVShow(id).pipe(take(1)).subscribe(
-      tvShow => {
-        this.content = tvShow;
+    this.recommendedMoviesService.getrecommendedMovie(id).pipe(take(1)).subscribe(
+      recommendedMovie => {
+        this.content = recommendedMovie;
         this.generateSeo();
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -130,8 +130,8 @@ export class DetailComponent implements OnInit {
     );
   }
 
-  getTVShowVideo(id: string) {
-    this.tvShowsService.getTVShowVideos(id).pipe(take(1)).subscribe(
+  getrecommendedMovieVideo(id: string) {
+    this.recommendedMoviesService.getrecommendedMovieVideos(id).pipe(take(1)).subscribe(
       res => {
         if (res?.results?.length > 0) {
           this.video = res.results.filter((video: { type: string; }) => video.type === 'Trailer')[0];
@@ -144,8 +144,8 @@ export class DetailComponent implements OnInit {
     );
   }
 
-  getRecomendedTVShow(id: string) {
-    this.tvShowsService.getRecomendTVShows(id).pipe(take(1)).subscribe(
+  getRecomendedrecommendedMovie(id: string) {
+    this.recommendedMoviesService.getRecomendrecommendedMovies(id).pipe(take(1)).subscribe(
       res => {
         this.recomendedContentList = res.results.slice(0, 12);
         this.cdr.detectChanges();

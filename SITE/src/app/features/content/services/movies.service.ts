@@ -16,7 +16,7 @@ export class MoviesService {
 
   constructor(private http: HttpClient) {
     this.baseUrl = 'https://api.themoviedb.org/3/';
-    this.stagingBaseUrl = 'http://192.168.9.74:5000/';
+    this.stagingBaseUrl = 'http://localhost:5000/';
     this.apiKey = environment.theMovieDBApi;
     this.language = 'pt-BR';  
     this.region = 'BR';
