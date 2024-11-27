@@ -1,5 +1,6 @@
 from io import TextIOWrapper
 from zipfile import ZipFile
+from typing import Union
 from pathlib import Path
 from tqdm import tqdm
 import duckdb
@@ -80,7 +81,6 @@ class DuckDB(object):
                     """
         self.db_sql(sql_query)
 
-
     def get_all_parameters(self) -> None:
         sql_query = """SELECT key FROM media"""
         self.db_sql(sql_query)
@@ -100,19 +100,15 @@ class DuckDB(object):
         sql_query = 'SELECT key, link, image, title, categories, rating, year FROM media'
         self.db_sql(sql_query)
         keys = ["key", "link", "image", "title", "categories", "rating", "year"]
-
         return [dict(zip(keys, result)) for result in self.results.fetchall()]
-    
-    def get_medias_by_category(self, category) -> None:
 
+    def get_medias_by_category(self, category: str, page: Union[int, None] = None) -> None:
+        offset = 100 * page
+        limit = offset + 100
         sql_query = f'''
         SELECT key, link, image, title, categories, rating, year 
         FROM media 
-        WHERE title LIKE '%{category}%' '''
-
+        WHERE categories LIKE '%{category}%' OFFSET {offset} LIMIT {limit}'''
         self.db_sql(sql_query)
-
         keys = ["key", "link", "image", "title", "categories", "rating", "year"]
-
         return [dict(zip(keys, result)) for result in self.results.fetchall()]
-        

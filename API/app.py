@@ -43,7 +43,9 @@ def get_movies():
 
 @app.get('/categories/<category>')
 def get_movies_category(category):
-    return jsonify({'movie_data_by_categories': manager.get_medias_by_category(category)})
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    return jsonify({'movie_data_by_categories': manager.get_medias_by_category(category, page)})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
