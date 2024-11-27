@@ -9,10 +9,10 @@ export class MoviesService {
   baseUrl: string;
 
   constructor(private http: HttpClient) {
-    this.baseUrl = 'http://localhost:5000'; // Endereço do servidor Flask
+    this.baseUrl = 'http://localhost:5000'; 
   }
 
-  // Método para buscar todos os filmes disponíveis na nova API
+
   getMovies(): Observable<any> {
     return this.http.get(`${this.baseUrl}/get-movies`);
   }
