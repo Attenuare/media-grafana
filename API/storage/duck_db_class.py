@@ -138,4 +138,35 @@ class DuckDB(object):
         sql_query = f'''SELECT key, link, image, title, categories, rating, year FROM media ORDER BY rating DESC'''
         return self.__manage_pagination(sql_query, page, 
                                         ["key", "link", "image", "title", "categories", "rating", "year"])
+    
+    def get_best_recommendations_by_year(self, page: Union[int, None] = None) -> None:
+        sql_query = '''
+                    SELECT m.key, m.link, m.image, m.title, m.categories, m.rating, m.year
+                    FROM media m
+                    JOIN (
+                        SELECT year, MAX(rating) AS max_rating
+                        FROM media
+                        GROUP BY year
+                    ) AS max_ratings
+                    ON m.year = max_ratings.year AND m.rating = max_ratings.max_rating
+                    ORDER BY m.year DESC    
+                    '''
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
+    
+    def get_best_recommendations_by_year_filter(self, search: int ,page: Union[int, None] = None) -> None:
+        sql_query = f'''
+                    SELECT m.key, m.link, m.image, m.title, m.categories, m.rating, m.year
+                    FROM media m
+                    JOIN (
+                        SELECT year, MAX(rating) AS max_rating
+                        FROM media
+                        GROUP BY year
+                    ) AS max_ratings
+                    ON m.year = max_ratings.year AND m.rating = max_ratings.max_rating
+                    AND m.year = {search}
+                    ORDER BY m.year DESC    
+                    '''
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
 

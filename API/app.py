@@ -66,7 +66,19 @@ def get_genres():
 def get_best_recommendations():
     page = request.args.get('page', int())
     page = int(page) if type(page) is not int and page.isdigit() else int()
-    return jsonify({'movie_data_by_search': manager.get_best_recommendations(page)})
+    return jsonify({'movie_recomendations': manager.get_best_recommendations(page)})
+
+@app.get('/best-movies-by-year')
+def get_best_recommendations_by_year():
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    return jsonify({'movie_recomendations_by_year': manager.get_best_recommendations_by_year(page)})
+
+@app.get('/best-movies-by-year/<year>')
+def get_best_recommendations_by_year_filter(year):
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    return jsonify({'movie_recomendations_by_year_filter': manager.get_best_recommendations_by_year_filter(year, page)})
 
 
 if __name__ == '__main__':
