@@ -21,15 +21,15 @@
       <div *ngIf="isLoading" class="loading-indicator">
         <mat-spinner diameter="20"></mat-spinner> Carregando...
       </div>
-      <ul *ngIf="!isLoading && searchResults.length > 0">
+      <ul *ngIf="!isLoading && total > 0">
         <li *ngFor="let result of searchResults">
-          <a [routerLink]="result.media_type === 'movie' ? '/movies/' + result.id : '/tv-shows/' + result.id">
-            <img [src]="result.poster_path ? 'https://image.tmdb.org/t/p/w500' + result.poster_path : 'assets/img/default-poster.png'" alt="{{result.title || result.name}}" />
-            <span>{{result.title || result.name}}</span>
+          <a [routerLink]="'/movies/'">
+            <img [src]="result['image']" alt="{{result['title']}}" />
+            <span>{{result['title']}}</span>
           </a>
         </li>
       </ul>
-      <div *ngIf="!isLoading && searchResults.length === 0">
+      <div *ngIf="!isLoading && total === 0">
         <span>Nenhum resultado encontrado.</span>
       </div>
     </div>

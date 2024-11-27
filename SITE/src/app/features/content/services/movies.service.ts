@@ -12,24 +12,26 @@ export class MoviesService {
   apiKey: string;
   language: string;
   region: string;
+  stagingBaseUrl: string;
 
   constructor(private http: HttpClient) {
     this.baseUrl = 'https://api.themoviedb.org/3/';
+    this.stagingBaseUrl = 'http://localhost:5000/';
     this.apiKey = environment.theMovieDBApi;
     this.language = 'pt-BR';  
     this.region = 'BR';
   }
 
-  getMovies(type: string, page: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}movie/${type}?api_key=${this.apiKey}&page=${page}&language=${this.language}&region=${this.region}`)
+  getMovies(page: number): Observable<any> {
+    return this.http.get(`${this.stagingBaseUrl}get-movies?page=${page}`)
   }
 
   getNowPlaying(page: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}movie/now_playing?api_key=${this.apiKey}&page=${page}&language=${this.language}&region=${this.region}`)
+    return this.http.get(`${this.baseUrl}movies/now_playing?api_key=${this.apiKey}&page=${page}&language=${this.language}&region=${this.region}`)
   }
 
   searchMovies(searchStr: string, page: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}search/movie?api_key=${this.apiKey}&query=${searchStr}&page=${page}&language=${this.language}&region=${this.region}`)
+    return this.http.get(`${this.stagingBaseUrl}movies?search=${searchStr}&page=${page}`)
   }
 
   getGenres(): Observable<any> {

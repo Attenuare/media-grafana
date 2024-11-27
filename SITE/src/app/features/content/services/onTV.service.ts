@@ -12,10 +12,12 @@ export class OnTVService {
   apiKey: string;
   language: string;
   region: string;
+  stagingBaseUrl: string;
 
   constructor(private http: HttpClient) {
     this.baseUrl = 'https://api.themoviedb.org/3/';
     this.apiKey = environment.theMovieDBApi;
+    this.stagingBaseUrl = 'http://localhost:5000/';
     this.language = 'pt-BR';  
     this.region = 'BR';
   }
@@ -23,23 +25,23 @@ export class OnTVService {
     return this.http.get(`${this.baseUrl}search/tv?api_key=${this.apiKey}&query=${searchStr}&page=${page}&language=${this.language}&region=${this.region}`);
   }
 
-  getTVShows(type: string, page: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}tv/${type}?api_key=${this.apiKey}&page=${page}&language=${this.language}`)
+  getrecommendedMovies(page: number): Observable<any> {
+    return this.http.get(`${this.stagingBaseUrl}best-movies?page=${page}`)
   }
 
   getTvOnTheAir(page: number): Observable<any> {
     return this.http.get(`${this.baseUrl}tv/on_the_air?api_key=${this.apiKey}&page=${page}&language=${this.language}`)
   }
 
-  getTVShow(id: string): Observable<any> {
+  getrecommendedMovie(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}tv/${id}?api_key=${this.apiKey}&language=${this.language}`)
   }
 
-  getTVShowVideos(id: string): Observable<any> {
+  getrecommendedMovieVideos(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}tv/${id}/videos?api_key=${this.apiKey}`)
   }
 
-  getRecomendTVShows(id: string): Observable<any> {
+  getRecomendrecommendedMovies(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}tv/${id}/recommendations?api_key=${this.apiKey}`)
   }
 
@@ -47,7 +49,7 @@ export class OnTVService {
     return this.http.get(`${this.baseUrl}genre/tv/list?api_key=${this.apiKey}&language=${this.language}`)
   }
 
-  getTVShowByGenre(id: string): Observable<any> {
+  getrecommendedMovieByGenre(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}discover/tv?api_key=${this.apiKey}&language=en-US&sort_by=popularity.desc&page=1&timezone=America%2FNew_York&with_genres=${id}&include_null_first_air_dates=false`);
   }
 

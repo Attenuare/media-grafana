@@ -1,13 +1,13 @@
 import logging
 import structlog
-
+from flask_cors import CORS
 from manager import MediaManager
 from flask import Flask, jsonify, request
 from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 manager = MediaManager()
-
+CORS(app)
 metrics = PrometheusMetrics(app)
 metrics.info('app_info', 'Aplicação Flask para demonstração', version='1.0.0')
 
@@ -39,11 +39,37 @@ def status():
 
 @app.get('/get-movies')
 def get_movies():
-    return jsonify({'movie_data': manager.get_medias()})
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    return jsonify({'results': manager.get_medias(page)})
 
 @app.get('/categories/<category>')
 def get_movies_category(category):
-    return jsonify({'movie_data_by_categories': manager.get_medias_by_category(category)})
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    return jsonify({'movie_data_by_categories': manager.get_medias_by_category(category, page)})
+
+@app.get('/movies')
+def get_movies_by_search():
+    search = request.args.get('search')
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    if not search:
+        return jsonify({'error': "Need to add a valid search term"})
+    results = manager.get_medias_by_search(search, page)
+    return jsonify({'results': manager.get_medias_by_search(search, page),
+                    'length': len(results)})
+
+@app.get('/genres')
+def get_genres():
+    return jsonify({'genres': manager.get_all_genres()})
+
+@app.get('/best-movies')
+def get_best_recommendations():
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    return jsonify({'results': manager.get_best_recommendations(page)})
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -32,7 +32,7 @@ export class ContentComponent implements OnInit {
 
   constructor(
     private moviesService: MoviesService,
-    private tvShowsService: OnTVService,
+    private recommendedMoviesService: OnTVService,
     private router: Router,
     private cdr: ChangeDetectorRef,
   ) {
@@ -44,7 +44,7 @@ export class ContentComponent implements OnInit {
     if (this.contentType === 'movies') {
       this.getNowPlayinMovies(1);
     } else {
-      this.getNowPlayinTVShows(1);
+      this.getNowPlayinrecommendedMovies(1);
     }
 
   }
@@ -59,8 +59,8 @@ export class ContentComponent implements OnInit {
     );
   }
 
-  getNowPlayinTVShows(page: number) {
-    this.tvShowsService.getTvOnTheAir(page).pipe(take(1)).subscribe(
+  getNowPlayinrecommendedMovies(page: number) {
+    this.recommendedMoviesService.getTvOnTheAir(page).pipe(take(1)).subscribe(
       res => {
         this.totalResults = res.total_results;
         this.nowPlaying = res.results;
@@ -73,7 +73,7 @@ export class ContentComponent implements OnInit {
     if (this.contentType === 'movies') {
       this.getNowPlayinMovies(event.pageIndex + 1);
     } else {
-      this.getNowPlayinTVShows(event.pageIndex + 1);
+      this.getNowPlayinrecommendedMovies(event.pageIndex + 1);
     }
   }
 

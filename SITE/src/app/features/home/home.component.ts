@@ -49,8 +49,8 @@ export class HomeComponent implements OnInit {
   moviesList: Array<MovieModel> = [];
   selectedMovieTab = 0;
 
-  tvShowsTabList = ['Exibindo Hoje', 'Em Exibição', 'Populares'];
-  tvShowsList: Array<TvModel> = [];
+  recommendedMoviesTabList = ['Exibindo Hoje', 'Em Exibição', 'Populares'];
+  recommendedMoviesList: Array<MovieModel> = [];
   selectedTVTab = 0;
 
   constructor(
@@ -66,13 +66,15 @@ export class HomeComponent implements OnInit {
       image: 'https://jancobh.github.io/Angular-Movies/background-main.webp'
     });
 
-    this.getMovies('now_playing', 1);
-    this.getTVShows('airing_today', 1);
+    this.getMovies(0);
+    this.getrecommendedMovies(0);
   }
 
-  getMovies(tipo: string, pagina: number): void {
-    this.moviesService.getMovies(tipo, pagina).pipe(take(1)).subscribe(res => {
+  getMovies(pagina: number): void {
+    this.moviesService.getMovies(pagina).pipe(take(1)).subscribe(res => {
+      console.log("this.moviesList")
       this.moviesList = res.results;
+      console.log(this.moviesList)
     });
   }
 
@@ -81,22 +83,22 @@ export class HomeComponent implements OnInit {
     const movieTypes = ['now_playing', 'upcoming', 'popular'];
     const selectedType = movieTypes[index];
     if (selectedType) {
-      this.getMovies(selectedType, 1);
+      this.getrecommendedMovies(0);
     }
   }
 
-  getTVShows(tipo: string, pagina: number): void {
-    this.onTvService.getTVShows(tipo, pagina).subscribe(res => {
-      this.tvShowsList = res.results;
+  getrecommendedMovies(pagina: number): void {
+    this.onTvService.getrecommendedMovies(pagina).subscribe(res => {
+      this.recommendedMoviesList = res.results;
     });
   }
 
   tabTVChange({ index }: { index: number; }) {
     this.selectedTVTab = index;
-    const tvShowTypes = ['airing_today', 'on_the_air', 'popular'];
-    const selectedType = tvShowTypes[index];
+    const recommendedMovieTypes = ['airing_today', 'on_the_air', 'popular'];
+    const selectedType = recommendedMovieTypes[index];
     if (selectedType) {
-      this.getTVShows(selectedType, 1);
+      this.getrecommendedMovies(0);
     }
   }
 

@@ -1,5 +1,6 @@
 from io import TextIOWrapper
 from zipfile import ZipFile
+from typing import Union
 from pathlib import Path
 from tqdm import tqdm
 import duckdb
@@ -80,7 +81,6 @@ class DuckDB(object):
                     """
         self.db_sql(sql_query)
 
-
     def get_all_parameters(self) -> None:
         sql_query = """SELECT key FROM media"""
         self.db_sql(sql_query)
@@ -96,23 +96,46 @@ class DuckDB(object):
         sql_query = f"""INSERT INTO media (key, link, image, title, categories, rating, year) VALUES {','.join(values)}"""
         self.db_sql(sql_query)
 
-    def get_medias(self) -> None:
+    def get_medias(self, page: int) -> None:
         sql_query = 'SELECT key, link, image, title, categories, rating, year FROM media'
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
+
+    def __manage_pagination(self, query: str, page: int, keys: list) -> list[dict]:
+        offset = 100 * page
+        limit = offset + 100
+        sql_query = query + f''' OFFSET {offset} LIMIT {limit}'''
         self.db_sql(sql_query)
-        keys = ["key", "link", "image", "title", "categories", "rating", "year"]
-
         return [dict(zip(keys, result)) for result in self.results.fetchall()]
-    
-    def get_medias_by_category(self, category) -> None:
 
+    def get_medias_by_category(self, category: str, page: Union[int, None] = None) -> None:
         sql_query = f'''
-        SELECT key, link, image, title, categories, rating, year 
-        FROM media 
-        WHERE title LIKE '%{category}%' '''
+            SELECT key, link, image, title, categories, rating, year 
+            FROM media WHERE categories LIKE '%{category}%' 
+        '''
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
 
+    def get_medias_by_search(self, search: str, page: Union[int, None] = None) -> None:
+        sql_query = f'''
+            SELECT key, link, image, title, categories, rating, year 
+            FROM media WHERE title LIKE '%{search}%' 
+        '''
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
+
+    def get_all_genres(self) -> None:
+        sql_query = f'''SELECT DISTINCT trim(UNNEST(string_to_array(categories, ';'))) FROM media'''
         self.db_sql(sql_query)
+        return [term[0] for term in self.results.fetchall() if len(term) > 0]
 
-        keys = ["key", "link", "image", "title", "categories", "rating", "year"]
+    def get_all_genres(self) -> None:
+        sql_query = f'''SELECT DISTINCT trim(UNNEST(string_to_array(categories, ';'))) FROM media'''
+        self.db_sql(sql_query)
+        return [term[0] for term in self.results.fetchall() if len(term) > 0]
 
-        return [dict(zip(keys, result)) for result in self.results.fetchall()]
-        
+    def get_best_recommendations(self, page: Union[int, None] = None) -> None:
+        sql_query = f'''SELECT key, link, image, title, categories, rating, year FROM media ORDER BY rating DESC'''
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
+
