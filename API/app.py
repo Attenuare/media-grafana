@@ -56,6 +56,10 @@ def get_movies_by_search():
         return jsonify({'error': "Need to add a valid search term"})
     return jsonify({'movie_data_by_search': manager.get_medias_by_search(search, page)})
 
+@app.get('/genres')
+def get_genres():
+    return jsonify({'genres': manager.get_all_genres()})
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

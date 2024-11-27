@@ -21,6 +21,9 @@ class MediaManager(object):
     def get_medias_by_search(self, search: str, page: int = int()) -> list[dict]:
         return self.db.get_medias_by_search(search, page)
 
+    def get_all_genres(self) -> list[dict]:
+        return self.db.get_all_genres()
+
     def run(self) -> None:
         self.prime.get_filters()
         for genre in tqdm(self.prime.filters):
