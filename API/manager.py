@@ -12,8 +12,8 @@ class MediaManager(object):
         self.ready_parameters = self.db.get_all_parameters()
         self.ready_parameters = self.ready_parameters.fetchall()
 
-    def get_medias(self) -> None:
-        return self.db.get_medias()
+    def get_medias(self, page: int = int()) -> None:
+        return self.db.get_medias(page)
 
     def get_medias_by_category(self, category: str, page: int = int()) -> list[dict]:
         return self.db.get_medias_by_category(category, page)

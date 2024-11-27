@@ -96,11 +96,10 @@ class DuckDB(object):
         sql_query = f"""INSERT INTO media (key, link, image, title, categories, rating, year) VALUES {','.join(values)}"""
         self.db_sql(sql_query)
 
-    def get_medias(self) -> None:
+    def get_medias(self, page: int) -> None:
         sql_query = 'SELECT key, link, image, title, categories, rating, year FROM media'
-        self.db_sql(sql_query)
-        keys = ["key", "link", "image", "title", "categories", "rating", "year"]
-        return [dict(zip(keys, result)) for result in self.results.fetchall()]
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
 
     def __manage_pagination(self, query: str, page: int, keys: list) -> list[dict]:
         offset = 100 * page

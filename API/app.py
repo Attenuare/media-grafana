@@ -1,13 +1,13 @@
 import logging
 import structlog
-
+from flask_cors import CORS
 from manager import MediaManager
 from flask import Flask, jsonify, request
 from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 manager = MediaManager()
-
+CORS(app)
 metrics = PrometheusMetrics(app)
 metrics.info('app_info', 'Aplicação Flask para demonstração', version='1.0.0')
 
@@ -39,7 +39,9 @@ def status():
 
 @app.get('/get-movies')
 def get_movies():
-    return jsonify({'movie_data': manager.get_medias()})
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    return jsonify({'results': manager.get_medias(page)})
 
 @app.get('/categories/<category>')
 def get_movies_category(category):
