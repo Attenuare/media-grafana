@@ -66,13 +66,15 @@ export class HomeComponent implements OnInit {
       image: 'https://jancobh.github.io/Angular-Movies/background-main.webp'
     });
 
-    this.getMovies('now_playing', 1);
+    this.getMovies(0);
     this.getTVShows('airing_today', 1);
   }
 
-  getMovies(tipo: string, pagina: number): void {
-    this.moviesService.getMovies(tipo, pagina).pipe(take(1)).subscribe(res => {
+  getMovies(pagina: number): void {
+    this.moviesService.getMovies(pagina).pipe(take(1)).subscribe(res => {
+      console.log("this.moviesList")
       this.moviesList = res.results;
+      console.log(this.moviesList)
     });
   }
 
@@ -81,7 +83,7 @@ export class HomeComponent implements OnInit {
     const movieTypes = ['now_playing', 'upcoming', 'popular'];
     const selectedType = movieTypes[index];
     if (selectedType) {
-      this.getMovies(selectedType, 1);
+      this.getMovies(0);
     }
   }
 

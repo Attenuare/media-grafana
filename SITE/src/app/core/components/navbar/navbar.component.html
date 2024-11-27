@@ -24,7 +24,7 @@
       <ul *ngIf="!isLoading && searchResults.length > 0">
         <li *ngFor="let result of searchResults">
           <a [routerLink]="result.media_type === 'movie' ? '/movies/' + result.id : '/tv-shows/' + result.id">
-            <img [src]="result.poster_path ? 'https://image.tmdb.org/t/p/w500' + result.poster_path : 'assets/img/default-poster.png'" alt="{{result.title || result.name}}" />
+            <img [src]="result.image" alt="{{result.title}}" />
             <span>{{result.title || result.name}}</span>
           </a>
         </li>
