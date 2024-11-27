@@ -41,5 +41,9 @@ def status():
 def get_movies():
     return jsonify({'movie_data': manager.get_medias()})
 
+@app.get('/categories/<category>')
+def get_movies_category(category):
+    return jsonify({'movie_data_by_categories': manager.get_medias_by_category(category)})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
