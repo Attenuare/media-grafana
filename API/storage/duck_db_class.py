@@ -102,13 +102,25 @@ class DuckDB(object):
         keys = ["key", "link", "image", "title", "categories", "rating", "year"]
         return [dict(zip(keys, result)) for result in self.results.fetchall()]
 
-    def get_medias_by_category(self, category: str, page: Union[int, None] = None) -> None:
+    def __manage_pagination(self, query: str, page: int, keys: list) -> list[dict]:
         offset = 100 * page
         limit = offset + 100
-        sql_query = f'''
-        SELECT key, link, image, title, categories, rating, year 
-        FROM media 
-        WHERE categories LIKE '%{category}%' OFFSET {offset} LIMIT {limit}'''
+        sql_query = query + f''' OFFSET {offset} LIMIT {limit}'''
         self.db_sql(sql_query)
-        keys = ["key", "link", "image", "title", "categories", "rating", "year"]
         return [dict(zip(keys, result)) for result in self.results.fetchall()]
+
+    def get_medias_by_category(self, category: str, page: Union[int, None] = None) -> None:
+        sql_query = f'''
+            SELECT key, link, image, title, categories, rating, year 
+            FROM media WHERE categories LIKE '%{category}%' 
+        '''
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
+
+    def get_medias_by_search(self, search: str, page: Union[int, None] = None) -> None:
+        sql_query = f'''
+            SELECT key, link, image, title, categories, rating, year 
+            FROM media WHERE title LIKE '%{search}%' 
+        '''
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])

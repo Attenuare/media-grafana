@@ -47,5 +47,15 @@ def get_movies_category(category):
     page = int(page) if type(page) is not int and page.isdigit() else int()
     return jsonify({'movie_data_by_categories': manager.get_medias_by_category(category, page)})
 
+@app.get('/movies')
+def get_movies_by_search():
+    search = request.args.get('search')
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    if not search:
+        return jsonify({'error': "Need to add a valid search term"})
+    return jsonify({'movie_data_by_search': manager.get_medias_by_search(search, page)})
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
