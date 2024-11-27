@@ -2,10 +2,17 @@ version: '3.8'
 services:
   flask_app:
     build:
-      context: .
+      context: ../API
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
+
+  frontend:
+    build:
+      context: ../SITE
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
 
   prometheus:
     image: prom/prometheus:latest

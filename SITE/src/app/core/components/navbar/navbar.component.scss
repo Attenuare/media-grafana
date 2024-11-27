@@ -1,0 +1,134 @@
+@import "./../../../styles/variables.scss";
+
+.navbar__container {
+  width: 100%;
+  background-color: rgba(0,0,0,0);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: .4s;
+  z-index: 100;
+
+  @media (max-width: $breakpoint-xs) {
+    position: static;
+    background: #212121;
+  }
+}
+
+.colored__scrolled {
+  background-color: #1a002c;
+  transition: .4s;
+}
+
+.navbar__nav {
+  height: $header-height;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+
+  img {
+    width: 9rem;
+    height: 100%;
+
+    @media (max-width: $breakpoint-xs) {
+      width: 7rem;
+    }
+  }
+}
+
+.navbar__logo {
+  text-transform: uppercase;
+  font-weight: var(--font-bold);
+  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  column-gap: .25rem;
+}
+
+.navbar__list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  @media (max-width: $breakpoint-xs) {
+    gap: 4px;
+  }
+
+  mat-icon {
+    color: #fff;
+  }
+
+  a {
+    transition: .3s;
+    position: relative;
+    padding-bottom: 5px;
+
+    &:first-child {
+      @media (max-width: $breakpoint-xs) {
+        display: none;
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background-color: #3d0066;
+      transition: width 0.4s ease-out; 
+    }
+
+    &:hover::after {
+      width: 100%; 
+    }
+
+    &.activated-route::after {
+      width: 100%; 
+    }
+  }
+
+  .mat-mdc-button {
+    border-radius: 0;
+  }
+}
+
+.navbar__search {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar__search-input {
+  padding: 8px 16px;
+  width: 60%; /* Ajuste o tamanho conforme necessário */
+  border: none;
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+  font-size: 16px;
+
+  ::placeholder {
+    color: #aaa;
+  }
+
+  &:focus {
+    outline: none;
+    background-color: #444;
+  }
+}
+
+::ng-deep .mdc-button__label {
+  color: white;
+}
+
+.activated-route {
+  border-bottom: 2px solid;
+  border-radius: 0;
+
+  &:last-child {
+    margin-right: 15px;
+  }
+}

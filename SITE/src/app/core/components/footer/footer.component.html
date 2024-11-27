@@ -1,0 +1,11 @@
+<footer class="footer">
+  <div>Projeto feito para <span class="footer__janco">nuvem</span></div>
+  <a *ngFor="let social of socialData" [href]="social.url"
+     target="_blank" rel="noopener noreferrer"
+     [attr.aria-label]="'Janco Boscan ' + social.name"
+     [title]="social.name"
+     class="footer__social"
+  >
+    <img [ngSrc]="social.img" [alt]="'Angular Movies '  + social.name" loading="lazy" [height]="24" [width]="24">
+  </a>
+</footer>
