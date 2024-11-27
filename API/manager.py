@@ -12,11 +12,26 @@ class MediaManager(object):
         self.ready_parameters = self.db.get_all_parameters()
         self.ready_parameters = self.ready_parameters.fetchall()
 
-    def get_medias(self) -> None:
-        return self.db.get_medias()
+    def get_medias(self, page: int = int()) -> None:
+        return self.db.get_medias(page)
+
+    def get_medias_by_category(self, category: str, page: int = int()) -> list[dict]:
+        return self.db.get_medias_by_category(category, page)
+
+    def get_medias_by_search(self, search: str, page: int = int()) -> list[dict]:
+        return self.db.get_medias_by_search(search, page)
+
+    def get_all_genres(self) -> list[dict]:
+        return self.db.get_all_genres()
+
+    def get_best_recommendations(self, page: int = int()) -> list[dict]:
+        return self.db.get_best_recommendations(page)
+
+    def get_best_recommendations_by_year(self, page: int = int()) -> list[dict]:
+        return self.db.get_best_recommendations_by_year(page)
     
-    def get_medias_by_category(self, category: str) -> list[dict]:
-        return self.db.get_medias_by_category(category)
+    def get_best_recommendations_by_year_filter(self, year: int, page: int = int()) -> list[dict]:
+        return self.db.get_best_recommendations_by_year_filter(year, page)
 
     def run(self) -> None:
         self.prime.get_filters()
