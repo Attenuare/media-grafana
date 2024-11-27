@@ -55,16 +55,7 @@ export class NavbarComponent {
       this.isLoading = true;
       this.searchResults = [];
   
-      // Chama o serviço de filmes
-      this.movieService.searchMovies(this.searchQuery, 1).subscribe({
-        next: (response) => {
-          console.log('Resultados dos filmes:', response);  // Veja o que a API retorna
-          this.searchResults = [...this.searchResults, ...response.results];
-        },
-        error: (error) => {
-          console.error('Erro ao buscar filmes:', error);
-        }
-      });
+   
   
       // Chama o serviço de séries de TV
       this.onTVService.searchShows(this.searchQuery, 1).subscribe({

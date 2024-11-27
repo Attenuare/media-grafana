@@ -12,7 +12,7 @@
 
       <div class="content__info container">
 
-        <img [ngSrc]="'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + content?.poster_path" [width]="300" [height]="450" [alt]="content?.title">
+        <img [src]="'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + content?.poster_path" [width]="300" [height]="450" [alt]="content?.title">
 
         <div class="content__data">
 
@@ -46,17 +46,18 @@
 
   <!-- Mobile data  -->
   <section class="content__data-mobile">
-    <h2>{{content?.title ?? content?.name}} ({{content?.release_date ?? content?.first_air_date | date:'YYYY' }})</h2>
+    <h2>{{content?.title || content?.name}} ({{content?.release_date ?? content?.first_air_date | date:'YYYY' }})</h2>
     <h3>{{content?.tagline}}</h3>
 
     <h4>Overview</h4>
     <p>{{content?.overview}}</p>
-
+<!-- 
     @if (video) {
       <button mat-flat-button color="mat-success" aria-label="Trailer" (click)="openDialog()" class="play-trailer">
         <mat-icon aria-hidden="false" fontIcon="play_arrow"></mat-icon> Ver Trailer
       </button>
     }
+      -->
   </section>
 
   <section class="content__recommendations container">

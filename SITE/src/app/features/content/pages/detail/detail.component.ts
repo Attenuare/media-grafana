@@ -1,171 +1,89 @@
-import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {PaginationModel} from '../../../../core/models/pagination.model';
-import {MoviesService} from '../../services/movies.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {DomSanitizer} from '@angular/platform-browser';
-import {SeoService} from '../../../../core/services/seo.service';
-import {take} from 'rxjs/operators';
-import {OnTVService} from "../../services/onTV.service";
-import {IMovie} from "../../interfaces/movie.interface";
-import {ITV} from "../../interfaces/tv.interface";
-import {IContent} from "../../interfaces/content.interface";
-import {DatePipe, NgOptimizedImage} from "@angular/common";
-import {MatProgressBar} from "@angular/material/progress-bar";
-import {CdkDrag, CdkDragHandle} from "@angular/cdk/drag-drop";
-import {MovieCardComponent} from "../../../../shared/components/poster-card-view/poster-card.component";
-import {ImgMissingDirective} from "../../../../shared/directives/img-missing.directive";
-import {MatIcon} from "@angular/material/icon";
-import {MatButton} from "@angular/material/button";
-import {MatDialog, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { OnTVService } from '../../services/onTV.service';
+import { MoviesService } from '../../services/movies.service';  
+import { take } from 'rxjs/operators';
+import { MovieCardComponent } from '../../../../shared/components/poster-card-view/poster-card.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
   imports: [
-    DatePipe,
-    CdkDrag,
-    CdkDragHandle,
+    MatPaginatorModule,
     MovieCardComponent,
-    ImgMissingDirective,
-    MatProgressBar,
-    MatIcon,
-    MatButton,
-    MatDialogContent,
-    MatDialogTitle,
-    NgOptimizedImage
+    MatButtonModule,
+    MatCardModule,
+    TitleCasePipe
   ],
   standalone: true
 })
-export class DetailComponent implements OnInit {
-
+export class ContentComponent implements OnInit {
+  
+  isLoading = false;  
   contentType = '';
-  content!: Partial<IMovie | ITV | any>;
-  recomendedContentList: Array<PaginationModel> = [];
-  video: IContent;
-  isLoading = true;
-
-  @ViewChild('matTrailerDialog') matTrailerDialog: TemplateRef<any>;
+  movies: any[] = []; 
+  totalResults: any;
 
   constructor(
-    private moviesService: MoviesService,
+    private moviesService: MoviesService,  
     private tvShowsService: OnTVService,
-    private route: ActivatedRoute,
     private router: Router,
-    private sanitizer: DomSanitizer,
-    private seo: SeoService,
-    public trailerDialog: MatDialog,
     private cdr: ChangeDetectorRef,
   ) {
-    this.contentType = this.router.url.split('/')[1];
+    this.contentType = this.router.url.split('/')[1]; 
   }
 
   ngOnInit() {
-    this.route.params.subscribe(
-      params => {
-        const id = params['url'];
-
-        if (this.contentType === 'movies') {
-          this.getMovie(id);
-          this.getMovieVideo(id);
-          this.getRecomendedMovie(id);
-        } else {
-          this.getTVShow(id);
-          this.getTVShowVideo(id);
-          this.getRecomendedTVShow(id);
-        }
-
-      }
-    );
+    this.loadContent();  
   }
 
-  getMovie(id: string) {
-    this.isLoading = true;
-
-    this.moviesService.getMovie(id).pipe(take(1)).subscribe(
-      movie => {
-        this.content = movie;
-        this.generateSeo();
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      }
-    );
+  loadContent() {
+    this.isLoading = true;  
+    if (this.contentType === 'movies') {
+      this.getMovies(); 
+    } else {
+     //TODO
+    }
   }
 
-  getMovieVideo(id: string) {
-    this.moviesService.getMovieVideos(id).pipe(take(1)).subscribe(
+  getMovies() {
+    this.moviesService.getMovies().pipe(take(1)).subscribe(
       res => {
-        if (res?.results?.length > 0) {
-          const trailerList = res.results.filter((video: { type: string; }) => video.type === 'Trailer');
-          this.video = trailerList[0];
-          this.video['url'] = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + this.video['key']);
-        } else {
-          this.video = null;
-        }
+        this.isLoading = false;  
+        this.totalResults = res.total_results;  
+        this.movies = res.results;  
         this.cdr.detectChanges();
+      },
+      () => {
+        this.isLoading = false;  
       }
     );
   }
 
-  getRecomendedMovie(id: string) {
-    this.moviesService.getRecomendMovies(id).pipe(take(1)).subscribe(
+  getNowPlayingTVShows(page: number) {
+    this.tvShowsService.getTvOnTheAir(page).pipe(take(1)).subscribe(
       res => {
-        this.recomendedContentList = res.results.slice(0, 12);
+        this.isLoading = false;  
+        this.totalResults = res.total_results;
+        this.movies = res.results;  
         this.cdr.detectChanges();
+      },
+      () => {
+        this.isLoading = false; 
       }
     );
   }
 
-  // TV
-  getTVShow(id: string) {
-    this.isLoading = true;
-
-    this.tvShowsService.getTVShow(id).pipe(take(1)).subscribe(
-      tvShow => {
-        this.content = tvShow;
-        this.generateSeo();
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      }
-    );
+  changePage(event) {
+    if (this.contentType === 'movies') {
+      this.getMovies();  
+    } else {
+      this.getNowPlayingTVShows(event.pageIndex + 1);  
+    }
   }
-
-  getTVShowVideo(id: string) {
-    this.tvShowsService.getTVShowVideos(id).pipe(take(1)).subscribe(
-      res => {
-        if (res?.results?.length > 0) {
-          this.video = res.results.filter((video: { type: string; }) => video.type === 'Trailer')[0];
-          this.video['url'] = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + this.video['key']);
-        } else {
-          this.video = null;
-        }
-        this.cdr.detectChanges();
-      }
-    );
-  }
-
-  getRecomendedTVShow(id: string) {
-    this.tvShowsService.getRecomendTVShows(id).pipe(take(1)).subscribe(
-      res => {
-        this.recomendedContentList = res.results.slice(0, 12);
-        this.cdr.detectChanges();
-      }
-    );
-  }
-
-  // Seo tags
-  generateSeo() {
-    this.seo.generateTags({
-      title: `${this.content.title}`,
-      description: `${this.content.overview}`,
-      image: `https://image.tmdb.org/t/p/w780/${this.content.backdrop_path}`,
-      slug: 'movie'
-    });
-  }
-
-  openDialog(): void {
-    const dialogRef = this.trailerDialog.open(this.matTrailerDialog, {});
-    dialogRef.disableClose = false;
-  }
-
 }

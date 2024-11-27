@@ -66,24 +66,21 @@ export class HomeComponent implements OnInit {
       image: 'https://jancobh.github.io/Angular-Movies/background-main.webp'
     });
 
-    this.getMovies('now_playing', 1);
+
     this.getTVShows('airing_today', 1);
   }
 
-  getMovies(tipo: string, pagina: number): void {
-    this.moviesService.getMovies(tipo, pagina).pipe(take(1)).subscribe(res => {
-      this.moviesList = res.results;
+  getMovies(): void {
+    this.moviesService.getMovies().pipe(take(1)).subscribe(res => {
+      this.moviesList = res.results;  // Agora você pode acessar os resultados da resposta
     });
   }
 
-  tabMovieChange({ index }: { index: number; }) {
-    this.selectedMovieTab = index;
-    const movieTypes = ['now_playing', 'upcoming', 'popular'];
-    const selectedType = movieTypes[index];
-    if (selectedType) {
-      this.getMovies(selectedType, 1);
-    }
+  tabMovieChange(event: any) {
+    this.selectedMovieTab = event.index;
+    // Adicione a lógica aqui para lidar com a mudança de tab de filmes
   }
+  
 
   getTVShows(tipo: string, pagina: number): void {
     this.onTvService.getTVShows(tipo, pagina).subscribe(res => {
