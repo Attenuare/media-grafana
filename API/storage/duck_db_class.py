@@ -129,3 +129,14 @@ class DuckDB(object):
         sql_query = f'''SELECT DISTINCT trim(UNNEST(string_to_array(categories, ';'))) FROM media'''
         self.db_sql(sql_query)
         return [term[0] for term in self.results.fetchall() if len(term) > 0]
+
+    def get_all_genres(self) -> None:
+        sql_query = f'''SELECT DISTINCT trim(UNNEST(string_to_array(categories, ';'))) FROM media'''
+        self.db_sql(sql_query)
+        return [term[0] for term in self.results.fetchall() if len(term) > 0]
+
+    def get_best_recommendations(self, page: Union[int, None] = None) -> None:
+        sql_query = f'''SELECT key, link, image, title, categories, rating, year FROM media ORDER BY rating DESC'''
+        return self.__manage_pagination(sql_query, page, 
+                                        ["key", "link", "image", "title", "categories", "rating", "year"])
+

@@ -24,6 +24,9 @@ class MediaManager(object):
     def get_all_genres(self) -> list[dict]:
         return self.db.get_all_genres()
 
+    def get_best_recommendations(self, page: int = int()) -> list[dict]:
+        return self.db.get_best_recommendations(page)
+
     def run(self) -> None:
         self.prime.get_filters()
         for genre in tqdm(self.prime.filters):

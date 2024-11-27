@@ -60,6 +60,12 @@ def get_movies_by_search():
 def get_genres():
     return jsonify({'genres': manager.get_all_genres()})
 
+@app.get('/best-movies')
+def get_best_recommendations():
+    page = request.args.get('page', int())
+    page = int(page) if type(page) is not int and page.isdigit() else int()
+    return jsonify({'movie_data_by_search': manager.get_best_recommendations(page)})
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
