@@ -8,7 +8,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 app = Flask(__name__)
 manager = MediaManager()
 CORS(app)
-metrics = PrometheusMetrics(app)
+metrics = PrometheusMetrics(app, group_by='endpoint')
 metrics.info('app_info', 'Aplicação Flask para demonstração', version='1.0.0')
 
 
